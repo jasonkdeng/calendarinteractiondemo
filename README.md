@@ -1,9 +1,18 @@
-# Calendar Bandwidth Awareness Engine (Demo)
+# Calendar Bandwidth Awareness (Demo)
 
 Minimal full-stack demo using:
 
+<<<<<<< HEAD
 - Next.js (App Router)
 - Manual multi-day schedule input only
+=======
+- Node.js
+- Express
+- Manual multi-day schedule input
+
+
+# Setup Instructions
+>>>>>>> 2f1381e821ccf9857531be9113770d1851d9a349
 
 ## 1) Configure environment variables
 
@@ -36,8 +45,8 @@ Optional switch:
 
 - `advancedResponse` (boolean, default `false`):
 	- `false`: returns a trimmed, pitch-friendly response.
-	- `true`: includes full diagnostics (e.g., `penaltyBreakdown`, type-minute internals).
-
+	- `true`: includes full diagnostics
+   
 Example request body:
 
 ```json
