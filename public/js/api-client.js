@@ -1,5 +1,5 @@
 export async function analyzeManualMultiDay(payload) {
-  const response = await fetch("/analyze-manual-multiday", {
+  const response = await fetch("/api/analyze-manual-multiday", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(payload),

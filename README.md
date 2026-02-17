@@ -1,14 +1,13 @@
 # Calendar Bandwidth Awareness Engine (Demo)
 
-Minimal full-stack Node.js demo using:
+Minimal full-stack demo using:
 
-- Node.js
-- Express
+- Next.js (App Router)
 - Manual multi-day schedule input only
 
 ## 1) Configure environment variables
 
-Only one variable is needed for local demos:
+Only one variable is optionally used for local demos:
 
 - `PORT` (optional, defaults to `3000`)
 
@@ -22,14 +21,14 @@ PORT=3000
 
 ```bash
 npm install
-npm start
+npm run dev
 ```
 
 Open `http://localhost:3000`.
 
 ## Endpoint
 
-### `POST /analyze-manual`
+### `POST /api/analyze-manual`
 
 Accepts a calendar-style `events` array and runs the bandwidth engine.
 
@@ -58,7 +57,7 @@ Example request body:
 
 The response includes date-level availability slots, bandwidth scoring, and daily load.
 
-### `POST /analyze-manual-multiday`
+### `POST /api/analyze-manual-multiday`
 
 Accepts multi-day schedules and returns per-day analysis for each selected day.
 
@@ -105,3 +104,4 @@ Example request body:
 
 - This version is manual-only with no external data connections.
 - The app is intentionally kept simple and readable (not production-hardened).
+- For Vercel, no manual `PORT` configuration is required in production.
