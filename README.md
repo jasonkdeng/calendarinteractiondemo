@@ -1,36 +1,107 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Calendar Bandwidth Awareness Engine (Demo)
 
-## Getting Started
+Minimal full-stack Node.js demo using:
 
-First, run the development server:
+- Node.js
+- Express
+- Manual multi-day schedule input only
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+## 1) Configure environment variables
+
+Only one variable is needed for local demos:
+
+- `PORT` (optional, defaults to `3000`)
+
+Create a `.env` file in the project root:
+
+```env
+PORT=3000
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 2) Install + run
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+npm install
+npm start
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Open `http://localhost:3000`.
 
-## Learn More
+## Endpoint
 
-To learn more about Next.js, take a look at the following resources:
+### `POST /analyze-manual`
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Accepts a calendar-style `events` array and runs the bandwidth engine.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Optional switch:
 
-## Deploy on Vercel
+- `advancedResponse` (boolean, default `false`):
+	- `false`: returns a trimmed, pitch-friendly response.
+	- `true`: includes full diagnostics (e.g., `penaltyBreakdown`, type-minute internals).
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Example request body:
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```json
+{
+	"date": "2026-02-17",
+	"timeZone": "America/New_York",
+	"advancedResponse": false,
+	"events": [
+		{
+			"status": "confirmed",
+			"start": { "dateTime": "2026-02-17T14:00:00.000Z" },
+			"end": { "dateTime": "2026-02-17T15:00:00.000Z" }
+		}
+	]
+}
+```
+
+The response includes date-level availability slots, bandwidth scoring, and daily load.
+
+### `POST /analyze-manual-multiday`
+
+Accepts multi-day schedules and returns per-day analysis for each selected day.
+
+Optional switch:
+
+- `advancedResponse` (boolean, default `false`) with the same behavior as above.
+
+Example request body:
+
+```json
+{
+	"timeZone": "America/New_York",
+	"advancedResponse": false,
+	"schedules": [
+		{
+			"date": "2026-02-17",
+			"events": [
+				{
+					"status": "confirmed",
+					"start": { "dateTime": "2026-02-17T14:00:00.000Z" },
+					"end": { "dateTime": "2026-02-17T15:00:00.000Z" }
+				}
+			]
+		},
+		{
+			"date": "2026-02-18",
+			"events": []
+		}
+	]
+}
+```
+
+## Manual UI flow
+
+1. Open `http://localhost:3000`.
+2. Pick a persona and choose a meeting type to paint: `investors`, `candidates`, or `customers`.
+3. Pick a start date and number of days.
+4. Click/drag cells in the multi-day grid (09:00–17:00) to mark busy slots.
+5. Different meeting types are color-coded and shown in the legend next to the type selector.
+6. Click **Run Manual Analysis** to get per-day structured availability + bandwidth JSON.
+7. Enable **Advanced diagnostics** if you want detailed internals in the response.
+
+## Notes
+
+- This version is manual-only with no external data connections.
+- The app is intentionally kept simple and readable (not production-hardened).

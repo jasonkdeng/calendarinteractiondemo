@@ -3,12 +3,16 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "node server.js",
     "build": "next build",
-    "start": "next start",
+    "start": "node server.js",
+    "next:dev": "next dev",
+    "next:start": "next start",
     "lint": "eslint"
   },
   "dependencies": {
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
     "next": "16.1.6",
     "react": "19.2.3",
     "react-dom": "19.2.3"

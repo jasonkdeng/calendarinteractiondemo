@@ -1,0 +1,340 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Calendar Bandwidth Awareness Engine</title>
+    <style>
+      :root {
+        --bg: #f3f6fb;
+        --panel: #ffffff;
+        --text: #1d2433;
+        --muted: #5f6b85;
+        --border: #dce3f0;
+        --primary: #2962ff;
+        --primary-strong: #1146d8;
+        --busy: #e34d59;
+        --type-investors: #6f5bff;
+        --type-candidates: #2a9d8f;
+        --type-customers: #f4a261;
+        --type-other: #e34d59;
+      }
+
+      body {
+        font-family: Inter, Segoe UI, Arial, sans-serif;
+        margin: 0;
+        padding: 28px;
+        background: radial-gradient(circle at top, #f8fbff 0%, var(--bg) 55%);
+        color: var(--text);
+      }
+
+      .card {
+        max-width: 980px;
+        margin: 0 auto;
+        background: var(--panel);
+        padding: 18px;
+        border-radius: 16px;
+        padding: 24px;
+        box-shadow: 0 10px 28px rgba(17, 35, 79, 0.08);
+      }
+
+      h1 {
+        margin: 0;
+      .selection-controls {
+        margin: 12px 0 14px;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        gap: 12px 14px;
+        align-items: end;
+      }
+      .selection-controls .stack label {
+        font-size: 0.84rem;
+        font-weight: 600;
+        color: #4f5d78;
+      }
+      .selection-controls select,
+      .selection-controls input[type="date"] {
+        width: 100%;
+      }
+      .advanced-toggle {
+        border: 1px solid #d7deee;
+        border-radius: 8px;
+        min-height: 34px;
+        padding: 0 10px;
+        background: #f8faff;
+      }
+      .selection-actions {
+        margin-top: 12px;
+        gap: 12px;
+        justify-content: space-between;
+      }
+      .selection-actions .row {
+        gap: 8px;
+      }
+        font-size: 1.65rem;
+        margin-top: 12px;
+      }
+
+      .hero {
+        display: block;
+      }
+
+      button {
+        background: var(--primary);
+        color: white;
+        border: none;
+        border-radius: 10px;
+        padding: 12px 16px;
+        font-size: 0.95rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: 120ms ease;
+      }
+
+      button:hover {
+        background: var(--primary-strong);
+        transform: translateY(-1px);
+      }
+
+      .ghost {
+        background: white;
+        color: var(--primary);
+        border: 1px solid #bdd1ff;
+      }
+
+      .ghost:hover {
+        background: #f2f7ff;
+      }
+
+      .row {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        align-items: center;
+      }
+
+      .section {
+        margin-top: 20px;
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 16px;
+        background: linear-gradient(to bottom, #ffffff 0%, #fcfdff 100%);
+      }
+
+      .section h2 {
+        margin: 0 0 8px;
+        font-size: 1rem;
+        letter-spacing: -0.01em;
+      }
+
+      .muted {
+        color: var(--muted);
+        font-size: 0.92rem;
+        line-height: 1.45;
+      }
+
+      .tips {
+        margin-top: 10px;
+        padding: 10px 12px;
+        border: 1px dashed #c8d6f3;
+        border-radius: 10px;
+        background: #f8fbff;
+      }
+
+      .stack {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
+
+      .legend {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        margin: 8px 0 2px;
+      }
+
+      .legend-item {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 0.86rem;
+        color: var(--muted);
+      }
+
+      .legend-swatch {
+        width: 12px;
+        height: 12px;
+        border-radius: 3px;
+      }
+
+      .slot-grid {
+        margin-top: 12px;
+        display: grid;
+        grid-template-columns: 100px repeat(var(--day-count, 5), minmax(110px, 1fr));
+        gap: 6px;
+        user-select: none;
+      }
+
+      .slot-head {
+        font-size: 0.86rem;
+        font-weight: 600;
+        color: var(--muted);
+        text-align: center;
+      }
+
+      .slot-time {
+        font-size: 0.9rem;
+        color: var(--muted);
+        display: flex;
+        align-items: center;
+      }
+
+      .slot-cell {
+        border: 1px solid #d2daea;
+        border-radius: 6px;
+        min-height: 30px;
+        background: #ffffff;
+        cursor: pointer;
+        transition: 80ms ease;
+      }
+
+      .slot-cell:hover {
+        border-color: #93b4ff;
+        background: #f6f9ff;
+      }
+
+      .slot-cell.busy {
+        background: var(--busy);
+        border-color: #cf3e4a;
+      }
+
+      .slot-cell.type-investors {
+        background: var(--type-investors);
+        border-color: #5948da;
+      }
+
+      .slot-cell.type-candidates {
+        background: var(--type-candidates);
+        border-color: #1f7f73;
+      }
+
+      .slot-cell.type-customers {
+        background: var(--type-customers);
+        border-color: #dd8a43;
+      }
+
+      .slot-cell.type-other {
+        background: var(--type-other);
+        border-color: #cf3e4a;
+      }
+
+      .slot-cell.selected-column {
+        box-shadow: inset 0 0 0 1px #6d9df8;
+      }
+
+      #status {
+        margin-top: 14px;
+        color: var(--muted);
+        font-weight: 600;
+      }
+
+      pre {
+        margin-top: 18px;
+        background: #f4f7fb;
+        border: 1px solid #e0e7f2;
+        border-radius: 10px;
+        padding: 14px;
+        overflow-x: auto;
+      }
+
+      input,
+      select {
+        border: 1px solid #cfd9ec;
+        border-radius: 8px;
+        height: 34px;
+        padding: 0 10px;
+        font-size: 0.92rem;
+        background: #fff;
+      }
+
+      @media (max-width: 840px) {
+        .hero {
+          display: block;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="card">
+      <div class="hero">
+        <div>
+          <h1>calendar bandwidth w/ meeting type weighting demo</h1>
+        </div>
+      </div>
+
+      <div class="section">
+        <h2>Manual Scenario Builder</h2>
+        <p class="muted">Create a what-if schedule with a multi-day grid from 09:00 to 17:00.</p>
+        <div class="selection-controls">
+          <div class="stack">
+            <label for="personaType">Persona</label>
+            <select id="personaType">
+              <option value="meeting-heavy">Meeting-heavy</option>
+              <option value="balanced" selected>Balanced</option>
+              <option value="maker">Maker / Focus</option>
+            </select>
+          </div>
+          <div class="stack">
+            <label for="meetingType">Meeting type to paint</label>
+            <select id="meetingType">
+              <option value="customers" selected>Customers</option>
+              <option value="investors">Investors</option>
+              <option value="candidates">Candidates</option>
+            </select>
+          </div>
+          <div class="stack">
+            <label for="advancedResponse">Response mode</label>
+            <label class="row advanced-toggle" style="gap: 6px; align-items: center;">
+              <input id="advancedResponse" type="checkbox" />
+              <span>Advanced diagnostics</span>
+            </label>
+          </div>
+        </div>
+        <div class="legend">
+          <span class="legend-item"><span class="legend-swatch" style="background: var(--type-investors)"></span>Investors</span>
+          <span class="legend-item"><span class="legend-swatch" style="background: var(--type-candidates)"></span>Candidates</span>
+          <span class="legend-item"><span class="legend-swatch" style="background: var(--type-customers)"></span>Customers</span>
+        </div>
+        <div class="row selection-actions">
+          <div class="row">
+            <label for="startDate">Start date:</label>
+            <input id="startDate" type="date" />
+            <label for="dayCount">Days:</label>
+            <select id="dayCount">
+              <option value="3">3</option>
+              <option value="5" selected>5</option>
+              <option value="7">7</option>
+            </select>
+          </div>
+          <div class="row">
+            <button id="clearSlotsBtn" class="ghost">Clear Selection</button>
+            <button id="analyzeManualBtn">Run Manual Analysis</button>
+          </div>
+        </div>
+        <div class="tips muted">
+          1) Click a free cell to paint busy time.<br />
+          2) Click a busy cell to erase.<br />
+          3) Drag to fill a full rectangle across days and times. (like lettucemeet)
+        </div>
+        <div id="manualMeta" class="muted" style="margin-top: 8px">Busy blocks selected: 0</div>
+        <div id="slotGrid" class="slot-grid"></div>
+      </div>
+
+      <div id="status">Choose a date range and mark busy time to begin.</div>
+      <pre id="output">{}</pre>
+    </div>
+
+    <script type="module" src="/js/app.js"></script>
+  </body>
+</html>
