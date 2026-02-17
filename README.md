@@ -1,10 +1,13 @@
-# Calendar Bandwidth Awareness Engine (Demo)
+# Calendar Bandwidth Awareness (Demo)
 
 Minimal full-stack Node.js demo using:
 
 - Node.js
 - Express
-- Manual multi-day schedule input only
+- Manual multi-day schedule input
+
+
+# Setup Instructions
 
 ## 1) Configure environment variables
 
@@ -37,8 +40,8 @@ Optional switch:
 
 - `advancedResponse` (boolean, default `false`):
 	- `false`: returns a trimmed, pitch-friendly response.
-	- `true`: includes full diagnostics (e.g., `penaltyBreakdown`, type-minute internals).
-
+	- `true`: includes full diagnostics
+   
 Example request body:
 
 ```json
