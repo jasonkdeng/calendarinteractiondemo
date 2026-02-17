@@ -2,17 +2,13 @@
 
 Minimal full-stack demo using:
 
-<<<<<<< HEAD
 - Next.js (App Router)
-- Manual multi-day schedule input only
-=======
 - Node.js
 - Express
 - Manual multi-day schedule input
 
 
 # Setup Instructions
->>>>>>> 2f1381e821ccf9857531be9113770d1851d9a349
 
 ## 1) Configure environment variables
 
